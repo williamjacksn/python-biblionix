@@ -4,6 +4,7 @@ services:
       - /bin/rm
       - -fr
       - dist
+      - src/biblionix.egg-info
     image: ghcr.io/williamjacksn/biblionix-dev
     init: true
     volumes:
