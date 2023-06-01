@@ -1,3 +1,5 @@
 .idea
+biblionix.egg-info
 dist
+
 compose.override.yaml
