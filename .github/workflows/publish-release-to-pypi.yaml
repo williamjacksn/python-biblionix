@@ -10,6 +10,11 @@ jobs:
   publish:
     name: Publish the release package to PyPI
     runs-on: ubuntu-latest
+    environment:
+      name: pypi-release
+      url: https://pypi.org/p/biblionix
+    permissions:
+      id-token: write
     steps:
 
       - name: Check out the repository
@@ -19,10 +24,7 @@ jobs:
         run: docker compose run --no-TTY --user="$(id -u):$(id -g)" py-build
 
       - name: Publish the package to PyPI
-        run: docker compose run --no-TTY twine-upload
-        env:
-          TWINE_PASSWORD: ${{ secrets.twine_password }}
-          TWINE_USERNAME: ${{ secrets.twine_username }}
+        uses: pypa/gh-action-pypi-publish@release/v1
 
       - name: Get file names
         id: files
