@@ -1,0 +1,47 @@
+services:
+  cleanup:
+    entrypoint:
+      - /bin/rm
+      - -fr
+      - dist
+    image: ghcr.io/williamjacksn/biblionix-dev
+    init: true
+    volumes:
+      - ./:/home/python/python-biblionix
+    working_dir: /home/python/python-biblionix
+
+  py-build:
+    entrypoint:
+      - /home/python/venv/bin/python
+      - -m
+      - build
+    image: ghcr.io/williamjacksn/biblionix-dev
+    init: true
+    volumes:
+      - ./:/home/python/python-biblionix
+    working_dir: /home/python/python-biblionix
+
+  shell:
+    entrypoint:
+      - /bin/sh
+    image: ghcr.io/williamjacksn/biblionix-dev
+    init: true
+    volumes:
+      - ./:/home/python/python-biblionix
+    working_dir: /home/python/python-biblionix
+
+  twine-upload:
+    entrypoint:
+      - /home/python/venv/bin/twine
+      - upload
+      - --skip-existing
+      - --verbose
+      - dist/*
+    environment:
+      TWINE_PASSWORD:
+      TWINE_USERNAME:
+    image: ghcr.io/williamjacksn/biblionix-dev
+    init: true
+    volumes:
+      - ./:/home/python/python-biblionix
+    working_dir: /home/python/python-biblionix
