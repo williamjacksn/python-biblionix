@@ -25,4 +25,3 @@ jobs:
 
       - name: Publish the package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-  
