@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "biblionix"
-description = "Python client library to interface with Biblionix library system"
+description = "Python client library to interface with Biblionix library systems"
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
