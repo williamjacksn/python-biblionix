@@ -1,26 +1,30 @@
 __version__ = '2023.0'
 
-import dataclasses
-import urllib.parse
-import urllib.request
+import httpx
 import xml.etree.ElementTree
 
 
-@dataclasses.dataclass
-class LibraryAccount:
-    library: str
-    username: str
-    password: str
+class BiblionixClient:
+    session_key: str
 
-    _session_key: str = dataclasses.field(init=False, repr=False, default=None)
+    def __init__(self, library_subdomain: str):
+        self.library_subdomain = library_subdomain
+        self.httpx_client = httpx.Client()
 
-    def sign_in(self):
-        url = f'https://{self.library}.biblionix.com/catalog/ajax_backend/login.xml.pl'
+    def authenticate(self, username: str, password: str):
+        url = f'https://{self.library_subdomain}.biblionix.com/catalog/ajax_backend/login.xml.pl'
         data = {
-            'password': self.password,
-            'username': self.username,
+            'username': username,
+            'password': password,
         }
-        response = urllib.request.urlopen(url, urllib.parse.urlencode(data).encode())
-        page = response.read().decode()
-        et = xml.etree.ElementTree.XML(page)
-        self._session_key = et.get('session')
+        login = self.httpx_client.post(url=url, data=data)
+        login.raise_for_status()
+        login_et = xml.etree.ElementTree.XML(login.text)
+        self.session_key = login_et.get('session')
+
+    def get_account_info(self) -> xml.etree.ElementTree:
+        account_url = f'https://{self.library_subdomain}.biblionix.com/catalog/ajax_backend/account.xml.pl'
+        account_data = {'session': self.session_key}
+        account = self.httpx_client.post(url=account_url, data=account_data)
+        account_et = xml.etree.ElementTree.XML(account.text)
+        return account_et
