@@ -1,4 +1,4 @@
-__version__ = '2023.0'
+__version__ = '2024.0'
 
 import httpx
 import xml.etree.ElementTree
