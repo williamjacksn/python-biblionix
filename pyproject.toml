@@ -25,7 +25,7 @@ email = "william@subtlecoolness.com"
 
 [project.urls]
 "Homepage" = "https://github.com/williamjacksn/python-biblionix"
-"Bug Tracker" = "https://github.com/williamjacksn/python-biblionix/issues"
+"Issues" = "https://github.com/williamjacksn/python-biblionix/issues"
 
 [tool.setuptools.dynamic]
 version.attr = "biblionix.__version__"
