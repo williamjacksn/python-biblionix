@@ -4,8 +4,6 @@
 #
 #    pip-compile
 #
---extra-index-url https://alpine-wheels.github.io/index
-
 anyio==4.6.0
     # via httpx
 build==1.2.2.post1
