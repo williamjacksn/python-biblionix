@@ -1,7 +1,19 @@
 __version__ = '2024.0'
 
+import dataclasses
+import datetime
 import httpx
 import xml.etree.ElementTree
+
+
+@dataclasses.dataclass
+class LibraryLoan:
+    item_id: str
+    title: str
+    subtitle: str
+    medium: str
+    due: datetime.date
+    renewable: bool
 
 
 class BiblionixClient:
@@ -28,3 +40,16 @@ class BiblionixClient:
         account = self.httpx_client.post(url=account_url, data=account_data)
         account_et = xml.etree.ElementTree.XML(account.text)
         return account_et
+
+    @property
+    def loans(self) -> list[LibraryLoan]:
+        result = []
+        account_info = self.get_account_info()
+        for item in account_info.findall('item'):
+            result.append(
+                LibraryLoan(item_id=item.get('id'), title=item.get('title').replace('\xad', ''), subtitle='',
+                            medium=item.get('medium').replace('\xad', ''),
+                            due=datetime.date.fromisoformat(item.get('due_raw')),
+                            renewable=item.get('renewable') == '1')
+            )
+        return result
