@@ -17,6 +17,9 @@ jobs:
       id-token: write
     steps:
 
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
       - name: Install uv
         run: sh ci/install-uv.sh
 
