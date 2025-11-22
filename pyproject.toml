@@ -28,5 +28,10 @@ email = "william@subtlecoolness.com"
 
 [dependency-groups]
 dev = [
+    "ruff>=0.14.6",
     "uv-build>=0.9.11",
 ]
+
+
+[tool.ruff.lint]
+select = ["ANN", "E", "F", "FURB", "I", "PERF", "RUF", "S", "UP"]

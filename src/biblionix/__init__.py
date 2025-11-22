@@ -1,7 +1,8 @@
 import dataclasses
 import datetime
-import httpx
 import xml.etree.ElementTree
+
+import httpx
 
 
 @dataclasses.dataclass
@@ -17,11 +18,11 @@ class LibraryLoan:
 class BiblionixClient:
     session_key: str
 
-    def __init__(self, library_subdomain: str):
+    def __init__(self, library_subdomain: str) -> None:
         self.library_subdomain = library_subdomain
         self.httpx_client = httpx.Client()
 
-    def authenticate(self, username: str, password: str):
+    def authenticate(self, username: str, password: str) -> None:
         url = f"https://{self.library_subdomain}.biblionix.com/catalog/ajax_backend/login.xml.pl"
         data = {
             "username": username,
@@ -32,7 +33,7 @@ class BiblionixClient:
         login_et = xml.etree.ElementTree.XML(login.text)
         self.session_key = login_et.get("session")
 
-    def get_account_info(self) -> xml.etree.ElementTree:
+    def get_account_info(self) -> xml.etree.ElementTree.Element:
         account_url = f"https://{self.library_subdomain}.biblionix.com/catalog/ajax_backend/account.xml.pl"
         account_data = {"session": self.session_key}
         account = self.httpx_client.post(url=account_url, data=account_data)
@@ -41,17 +42,15 @@ class BiblionixClient:
 
     @property
     def loans(self) -> list[LibraryLoan]:
-        result = []
         account_info = self.get_account_info()
-        for item in account_info.findall("item"):
-            result.append(
-                LibraryLoan(
-                    item_id=item.get("id"),
-                    title=item.get("title").replace("\xad", ""),
-                    subtitle="",
-                    medium=item.get("medium").replace("\xad", ""),
-                    due=datetime.date.fromisoformat(item.get("due_raw")),
-                    renewable=item.get("renewable") == "1",
-                )
+        return [
+            LibraryLoan(
+                item_id=item.get("id"),
+                title=item.get("title").replace("\xad", ""),
+                subtitle="",
+                medium=item.get("medium").replace("\xad", ""),
+                due=datetime.date.fromisoformat(item.get("due_raw")),
+                renewable=item.get("renewable") == "1",
             )
-        return result
+            for item in account_info.findall("item")
+        ]
