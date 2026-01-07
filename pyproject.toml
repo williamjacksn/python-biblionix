@@ -7,7 +7,7 @@ name = "biblionix"
 version = "2025.1"
 description = "Python client library to interface with Biblionix library systems"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 dependencies = [
     "httpx>=0.28.1",
