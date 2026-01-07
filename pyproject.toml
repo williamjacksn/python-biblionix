@@ -4,7 +4,7 @@ requires = ["uv-build>=0.9.22,<0.10.0"]
 
 [project]
 name = "biblionix"
-version = "2025.1"
+version = "2026.0"
 description = "Python client library to interface with Biblionix library systems"
 readme = "README.md"
 requires-python = ">=3.10"
