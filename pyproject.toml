@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "uv_build"
-requires = ["uv-build>=0.9.11,<0.10.0"]
+requires = ["uv-build>=0.9.22,<0.10.0"]
 
 [project]
 name = "biblionix"
@@ -28,8 +28,8 @@ email = "william@subtlecoolness.com"
 
 [dependency-groups]
 dev = [
-    "ruff>=0.14.6",
-    "uv-build>=0.9.11",
+    "ruff>=0.14.10",
+    "uv-build>=0.9.22",
 ]
 
 
