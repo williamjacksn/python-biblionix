@@ -1,6 +1,6 @@
 import dataclasses
-import datetime
-import xml.etree.ElementTree
+import datetime as dt
+import xml.etree.ElementTree as ET
 
 import httpx
 
@@ -11,7 +11,7 @@ class LibraryLoan:
     title: str
     subtitle: str
     medium: str
-    due: datetime.date
+    due: dt.date
     renewable: bool
 
 
@@ -30,14 +30,14 @@ class BiblionixClient:
         }
         login = self.httpx_client.post(url=url, data=data)
         login.raise_for_status()
-        login_et = xml.etree.ElementTree.XML(login.text)
+        login_et = ET.XML(login.text)
         self.session_key = login_et.get("session")
 
-    def get_account_info(self) -> xml.etree.ElementTree.Element:
+    def get_account_info(self) -> ET.Element:
         account_url = f"https://{self.library_subdomain}.biblionix.com/catalog/ajax_backend/account.xml.pl"
         account_data = {"session": self.session_key}
         account = self.httpx_client.post(url=account_url, data=account_data)
-        account_et = xml.etree.ElementTree.XML(account.text)
+        account_et = ET.XML(account.text)
         return account_et
 
     @property
@@ -49,7 +49,7 @@ class BiblionixClient:
                 title=item.get("title").replace("\xad", ""),
                 subtitle="",
                 medium=item.get("medium").replace("\xad", ""),
-                due=datetime.date.fromisoformat(item.get("due_raw")),
+                due=dt.date.fromisoformat(item.get("due_raw")),
                 renewable=item.get("renewable") == "1",
             )
             for item in account_info.findall("item")
