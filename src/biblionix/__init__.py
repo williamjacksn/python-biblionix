@@ -31,7 +31,7 @@ class BiblionixClient:
         login = self.httpx_client.post(url=url, data=data)
         login.raise_for_status()
         login_et = ET.XML(login.text)
-        self.session_key = login_et.get("session")
+        self.session_key = login_et.attrib["session"]
 
     def get_account_info(self) -> ET.Element:
         account_url = f"https://{self.library_subdomain}.biblionix.com/catalog/ajax_backend/account.xml.pl"
@@ -45,11 +45,11 @@ class BiblionixClient:
         account_info = self.get_account_info()
         return [
             LibraryLoan(
-                item_id=item.get("id"),
-                title=item.get("title").replace("\xad", ""),
+                item_id=item.attrib["id"],
+                title=item.attrib["title"].replace("\xad", ""),
                 subtitle="",
-                medium=item.get("medium").replace("\xad", ""),
-                due=dt.date.fromisoformat(item.get("due_raw")),
+                medium=item.attrib["medium"].replace("\xad", ""),
+                due=dt.date.fromisoformat(item.attrib["due_raw"]),
                 renewable=item.get("renewable") == "1",
             )
             for item in account_info.findall("item")
